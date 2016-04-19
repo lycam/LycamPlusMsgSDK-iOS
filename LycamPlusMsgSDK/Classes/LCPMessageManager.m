@@ -16,7 +16,7 @@
 @property (strong, nonatomic) NSString *topic;
 @property (strong, nonatomic) NSDictionary *mqttSettings;
 @end
-
+#define DEFAULT_QOS_LEVEL MQTTQosLevelAtLeastOnce
 @implementation LCPMessageManager
 
 -(id) initWithToken:(NSString *) token withTopic:(NSString*)topic withConfig:(NSDictionary*) config{
@@ -25,7 +25,7 @@
         self.base = @"LCP";
         self.topic = topic;
        
-        self.mqttSettings = @{@"prefix":@"LCP",
+        self.mqttSettings = @{@"appname":@"LCP",
                               @"host":@"mqtt.lycam.tv",
                               @"port":@(1883),
                               @"tls":@(NO)
@@ -33,7 +33,7 @@
         if(config){
             self.mqttSettings = config;
         }
-        NSString * base = [self.mqttSettings objectForKey:@"prefix"];
+        NSString * base = [self.mqttSettings objectForKey:@"appname"];
         if(base){
             self.base = base;
         }
@@ -55,7 +55,7 @@
         self.manager = [[MQTTSessionManager alloc] init];
         self.manager.delegate = self;
         
-        self.manager.subscriptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:MQTTQosLevelExactlyOnce]
+        self.manager.subscriptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:DEFAULT_QOS_LEVEL]
                                                                  forKey:[NSString stringWithFormat:@"%@/%@", self.base,self.topic]];
         [self.manager connectTo:self.mqttSettings[@"host"]
                            port:[self.mqttSettings[@"port"] intValue]
@@ -234,7 +234,7 @@
 
    NSInteger mID = [self.manager sendData:jsonData
                      topic:[NSString stringWithFormat:@"%@/%@", self.base,self.topic]
-                       qos:MQTTQosLevelExactlyOnce
+                       qos:DEFAULT_QOS_LEVEL
                     retain:FALSE];
     return mID;
 }

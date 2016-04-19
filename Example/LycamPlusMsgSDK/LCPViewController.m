@@ -72,7 +72,7 @@
     
     
     
-    NSDictionary * config = @{@"prefix":@"LCP",
+    NSDictionary * config = @{@"appname":@"testapp",
                               @"host":@"mqtt.lycam.tv",
                               @"port":@(1883),
                               @"tls":@(NO)
