@@ -103,14 +103,15 @@
 }
 -(void) managerConnected:(LCPMessageManager *)manager{
     NSLog(@"connected");
-    NSDictionary * msg = @{
-                           @"type":@"chat",
-                           @"msg": @{
-                                   @"title":@"wowo",
-                                   @"body":@"测试"
-                                   }
-                           };
-    [self.manager send:msg];
+    self.textView.text = [NSString stringWithFormat:@"%@%@\n", self.textView.text,@"connected!" ];
+//    NSDictionary * msg = @{
+//                           @"type":@"chat",
+//                           @"msg": @{
+//                                   @"title":@"wowo",
+//                                   @"body":@"测试"
+//                                   }
+//                           };
+//    [self.manager send:msg];
 }
 -(void) manager:(LCPMessageManager *)manager receiveMessage:(NSDictionary * )msg withTopic:(NSString *)topic{
     NSLog(@"receiveMessage:%@ <-%@",msg,topic);
