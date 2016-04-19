@@ -7,7 +7,8 @@
 //
 
 @import UIKit;
+#import "LycamPlusMsgSDK/LCPMessageManager.h"
 
-@interface LCPViewController : UIViewController
+@interface LCPViewController : UIViewController<LCPMessageManagerDelegate,UITextViewDelegate, UITextFieldDelegate>
 
 @end
