@@ -25,7 +25,7 @@
         self.base = @"LCP";
         self.topic = topic;
        
-        self.mqttSettings = @{@"base":@"LCP",
+        self.mqttSettings = @{@"prefix":@"LCP",
                               @"host":@"mqtt.lycam.tv",
                               @"port":@(1883),
                               @"tls":@(NO)
@@ -33,16 +33,19 @@
         if(config){
             self.mqttSettings = config;
         }
+        NSString * base = [self.mqttSettings objectForKey:@"prefix"];
+        if(base){
+            self.base = base;
+        }
         
     }
     return self;
 }
 
 
--(void) initClient{
-    
+-(void) disconnect{
+    [self.manager disconnect];
 }
-
 -(void) connect{
     /*
      * MQTTClient: create an instance of MQTTSessionManager once and connect

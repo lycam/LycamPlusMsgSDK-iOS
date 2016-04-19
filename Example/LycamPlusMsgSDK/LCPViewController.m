@@ -70,7 +70,15 @@
     
     [self.view addSubview: self.textView];//加入到整个页面中
     
-    _manager = [[ LCPMessageManager alloc]  initWithToken:@"" withTopic:@"channel1" withConfig:nil];
+    
+    
+    NSDictionary * config = @{@"prefix":@"LCP",
+                              @"host":@"mqtt.lycam.tv",
+                              @"port":@(1883),
+                              @"tls":@(NO)
+                              };
+    
+    _manager = [[ LCPMessageManager alloc]  initWithToken:@"" withTopic:@"channel1" withConfig:config];
     _manager.delegate = self;
     [_manager connect];
     
