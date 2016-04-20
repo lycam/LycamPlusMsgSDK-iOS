@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = "LycamPlusMsgSDK"
   s.version          = "0.1.0"
-  s.summary          = "A short description of LycamPlusMsgSDK."
+  s.summary          = "A short description of LycamPlusMsgSDK for IM LycamPlus."
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -20,11 +20,11 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
                        DESC
 
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/LycamPlusMsgSDK"
+  s.homepage         = "https://coding.net/u/lycam/p/LycamPlusMsgSDK-iOS/git"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "no777" => "wt@lycam.tv" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/LycamPlusMsgSDK.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://git.coding.net/lycam/LycamPlusMsgSDK-iOS.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '7.0'
