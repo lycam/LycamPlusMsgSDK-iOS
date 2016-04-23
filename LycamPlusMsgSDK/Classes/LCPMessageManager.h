@@ -16,7 +16,7 @@
 -(void) managerConnected:(LCPMessageManager*) manager ;
 -(void) managerClosing:(LCPMessageManager*) manager ;
 -(void) managerClosed:(LCPMessageManager*) manager ;
--(void) managerError:(LCPMessageManager*) manager ;
+-(void) manager:(LCPMessageManager*)manager error: (NSError*) error;
 -(void) manager:(LCPMessageManager*) manager receiveMessage:(NSDictionary * )msg withTopic:(NSString*) topic;
 @end
 

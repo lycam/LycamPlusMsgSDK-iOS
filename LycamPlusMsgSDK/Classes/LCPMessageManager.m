@@ -62,14 +62,14 @@
                             tls:[self.mqttSettings[@"tls"] boolValue]
                       keepalive:60
                           clean:true
-                           auth:false
+                           auth:true
                            user:[UIDevice currentDevice].name
                            pass:self.token
                       willTopic:[NSString stringWithFormat:@"%@/%@", self.base,self.topic]
                            will:[@"offline" dataUsingEncoding:NSUTF8StringEncoding]
                         willQos:MQTTQosLevelExactlyOnce
                  willRetainFlag:FALSE
-                   withClientId:nil];
+                   withClientId:[UIDevice currentDevice].identifierForVendor.UUIDString];
     } else {
         [self.manager connectToLast];
     }
@@ -114,8 +114,8 @@
             break;
         case MQTTSessionManagerStateError:
             if (self.delegate) {
-                if ([self.delegate respondsToSelector:@selector(managerError:)]) {
-                    [self.delegate managerError:self];
+                if ([self.delegate respondsToSelector:@selector(manager:error:)]) {
+                    [self.delegate manager:self error:self.manager.lastErrorCode];
                 }
             }
             break;

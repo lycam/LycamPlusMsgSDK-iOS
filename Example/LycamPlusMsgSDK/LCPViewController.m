@@ -73,12 +73,12 @@
     
     
     NSDictionary * config = @{@"appname":@"testapp",
-                              @"host":@"mqtt.lycam.tv",
+                              @"host":@"192.168.1.9",
                               @"port":@(1883),
                               @"tls":@(NO)
                               };
     
-    _manager = [[ LCPMessageManager alloc]  initWithToken:@"" withTopic:@"channel1" withConfig:config];
+    _manager = [[ LCPMessageManager alloc]  initWithToken:@"token" withTopic:@"channel1" withConfig:config];
     _manager.delegate = self;
     [_manager connect];
     
@@ -135,5 +135,8 @@
 //    [alert show];
     
 }
+-(void) manager:(LCPMessageManager *)manager error:(NSError *)error{
+    self.textView.text = [NSString stringWithFormat:@"%@error:%d %@\n", self.textView.text, error.code,[error localizedDescription] ];
 
+}
 @end
