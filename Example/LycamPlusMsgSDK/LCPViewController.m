@@ -70,15 +70,17 @@
     
     [self.view addSubview: self.textView];//加入到整个页面中
     
-    
+//    CGAffineTransform t  = CGAffineTransformMake(-1,0,0,1,0,0);
+
+//    _textView.transform = t;
     
     NSDictionary * config = @{@"appname":@"testapp",
-                              @"host":@"mqtt.lycam.tv",
+                              @"host":@"192.168.0.115",
                               @"port":@(1883),
                               @"tls":@(NO)
                               };
     
-    _manager = [[ LCPMessageManager alloc]  initWithToken:@"" withTopic:@"channel1" withConfig:config];
+    _manager = [[ LCPMessageManager alloc]  initWithToken:@"abcd" withTopic:@"channel1" withConfig:config];
     _manager.delegate = self;
     [_manager connect];
     

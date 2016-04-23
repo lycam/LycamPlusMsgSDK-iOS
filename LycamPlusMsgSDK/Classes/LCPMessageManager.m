@@ -62,14 +62,14 @@
                             tls:[self.mqttSettings[@"tls"] boolValue]
                       keepalive:60
                           clean:true
-                           auth:false
+                           auth:true
                            user:[UIDevice currentDevice].name
                            pass:self.token
                       willTopic:[NSString stringWithFormat:@"%@/%@", self.base,self.topic]
                            will:[@"offline" dataUsingEncoding:NSUTF8StringEncoding]
                         willQos:MQTTQosLevelExactlyOnce
                  willRetainFlag:FALSE
-                   withClientId:nil];
+                   withClientId:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
     } else {
         [self.manager connectToLast];
     }
