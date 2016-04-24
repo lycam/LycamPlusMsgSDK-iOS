@@ -78,7 +78,7 @@
                               @"tls":@(NO)
                               };
     
-    _manager = [[ LCPMessageManager alloc]  initWithToken:@"token" withTopic:@"channel1" withConfig:config];
+    _manager = [[ LCPMessageManager alloc]  initWithToken:@"eZgyZcrwVj6DwCmoekF4YA1wkKq90S5mOzOn6w5urrnud4bl8XwjR20gyg9db5w9" withTopic:@"channel1" withConfig:config];
     _manager.delegate = self;
     [_manager connect];
     
