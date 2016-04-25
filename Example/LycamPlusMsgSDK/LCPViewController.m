@@ -70,17 +70,15 @@
     
     [self.view addSubview: self.textView];//加入到整个页面中
     
-//    CGAffineTransform t  = CGAffineTransformMake(-1,0,0,1,0,0);
-
-//    _textView.transform = t;
+    
     
     NSDictionary * config = @{@"appname":@"testapp",
-                              @"host":@"192.168.0.115",
+                              @"host":@"192.168.1.9",
                               @"port":@(1883),
                               @"tls":@(NO)
                               };
     
-    _manager = [[ LCPMessageManager alloc]  initWithToken:@"abcd" withTopic:@"channel1" withConfig:config];
+    _manager = [[ LCPMessageManager alloc]  initWithToken:@"eZgyZcrwVj6DwCmoekF4YA1wkKq90S5mOzOn6w5urrnud4bl8XwjR20gyg9db5w9" withTopic:@"channel1" withConfig:config];
     _manager.delegate = self;
     [_manager connect];
     
@@ -137,5 +135,8 @@
 //    [alert show];
     
 }
+-(void) manager:(LCPMessageManager *)manager error:(NSError *)error{
+    self.textView.text = [NSString stringWithFormat:@"%@error:%d %@\n", self.textView.text, error.code,[error localizedDescription] ];
 
+}
 @end

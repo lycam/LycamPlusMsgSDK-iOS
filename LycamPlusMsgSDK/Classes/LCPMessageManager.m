@@ -69,7 +69,7 @@
                            will:[@"offline" dataUsingEncoding:NSUTF8StringEncoding]
                         willQos:MQTTQosLevelExactlyOnce
                  willRetainFlag:FALSE
-                   withClientId:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
+                   withClientId:[UIDevice currentDevice].identifierForVendor.UUIDString];
     } else {
         [self.manager connectToLast];
     }
@@ -114,8 +114,8 @@
             break;
         case MQTTSessionManagerStateError:
             if (self.delegate) {
-                if ([self.delegate respondsToSelector:@selector(managerError:)]) {
-                    [self.delegate managerError:self];
+                if ([self.delegate respondsToSelector:@selector(manager:error:)]) {
+                    [self.delegate manager:self error:self.manager.lastErrorCode];
                 }
             }
             break;
