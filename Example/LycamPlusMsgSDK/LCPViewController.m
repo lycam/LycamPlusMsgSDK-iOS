@@ -73,7 +73,7 @@
     
     
     NSDictionary * config = @{@"appname":@"testapp",
-                              @"host":@"192.168.1.9",
+                              @"host":@"192.168.0.115",
                               @"port":@(1883),
                               @"tls":@(NO)
                               };
