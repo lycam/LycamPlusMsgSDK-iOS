@@ -72,13 +72,32 @@
     
     
     
+//    NSDictionary * config = @{@"appname":@"testapp",
+//                              @"host":@"192.168.0.115",
+//                              @"port":@(1883),
+//                              @"tls":@(NO)
+//                              };
+    
+//    NSDictionary * config = @{@"appname":@"testapp",
+//                              @"host":@"192.168.59.103",
+//                              @"port":@(1883),
+//                              @"tls":@(NO)
+//                              };
+//    
+    
+    
+//    NSDictionary * config = @{@"appname":@"testapp",
+//                              @"host":@"54.222.189.197",
+//                              @"port":@(1883),
+//                              @"tls":@(NO)
+//                              };
     NSDictionary * config = @{@"appname":@"testapp",
-                              @"host":@"192.168.0.115",
+                              @"host":@"mqtt.lycam.tv",
                               @"port":@(1883),
                               @"tls":@(NO)
                               };
     
-    _manager = [[ LCPMessageManager alloc]  initWithToken:@"eZgyZcrwVj6DwCmoekF4YA1wkKq90S5mOzOn6w5urrnud4bl8XwjR20gyg9db5w9" withTopic:@"channel1" withConfig:config];
+    _manager = [[ LCPMessageManager alloc]  initWithToken:@"nKJ0FgjiuceCeAzq7sYSKMOOXQmOGVMViFBhZQBKeoMQ9MjbeMJ58Q9YXlBGwnYc" withTopic:@"channel1" withConfig:config];
     _manager.delegate = self;
     [_manager connect];
     
