@@ -70,41 +70,17 @@
     
     [self.view addSubview: self.textView];//加入到整个页面中
     
-    
-    
-//    NSDictionary * config = @{@"appname":@"testapp",
-//                              @"host":@"192.168.0.115",
-//                              @"port":@(1883),
-//                              @"tls":@(NO)
-//                              };
-    
-//    NSDictionary * config = @{@"appname":@"testapp",
-//                              @"host":@"192.168.59.103",
-//                              @"port":@(1883),
-//                              @"tls":@(NO)
-//                              };
-//    
-    
-    
-//    NSDictionary * config = @{@"appname":@"testapp",
-//                              @"host":@"54.222.189.197",
-//                              @"port":@(1883),
-//                              @"tls":@(NO)
-//                              };
-    NSDictionary * config = @{@"appname":@"testapp",
-                              @"host":@"mqtt.lycam.tv",
-                              @"port":@(1883),
-                              @"tls":@(NO)
+
+    NSDictionary * config = @{kLCPMSGAppName:@"testapp",
+                              kLCPMSGServerHost:@"mqtt.lycam.tv",
+                              kLCPMSGServerPort:@(1883),
+                              kLCPMSGTls:@(NO)
                               };
     
-    _manager = [[ LCPMessageManager alloc]  initWithToken:@"nKJ0FgjiuceCeAzq7sYSKMOOXQmOGVMViFBhZQBKeoMQ9MjbeMJ58Q9YXlBGwnYc" withTopic:@"channel1" withConfig:config];
+    _manager = [[ LCPMessageManager alloc]  initWithToken:@"KlPPCNHC4oiaZJYOyhyO5pXgK4zXiZeHAg3SIs7AtBkrwLH5gyHYbIxpGkX4u7yj" withConfig:config];
     _manager.delegate = self;
     [_manager connect];
-    
-    
-    
-    //this is part of the synchronous API
-	// Do any additional setup after loading the view, typically from a nib.
+
 }
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -116,7 +92,7 @@
                                    @"body":self.textField.text
                                    }
                            };
-    [self.manager send:msg];
+    [self.manager send:msg withChannel:@"channel1"];
     self.textField.text = @"";
     return YES;
 }
@@ -131,6 +107,7 @@
 -(void) managerConnected:(LCPMessageManager *)manager{
     NSLog(@"connected");
     self.textView.text = [NSString stringWithFormat:@"%@%@\n", self.textView.text,@"connected!" ];
+    [_manager subscribeChannel:@"channel1"];
 //    NSDictionary * msg = @{
 //                           @"type":@"chat",
 //                           @"msg": @{
@@ -140,12 +117,12 @@
 //                           };
 //    [self.manager send:msg];
 }
--(void) manager:(LCPMessageManager *)manager receiveMessage:(NSDictionary * )msg withTopic:(NSString *)topic{
+-(void) manager:(LCPMessageManager *)manager receiveMessage:(NSDictionary * )msg withTopic:(NSString *)topic withRetained:(BOOL)retained{
     NSLog(@"receiveMessage:%@ <-%@",msg,topic);
     NSDictionary * _m = [msg objectForKey:@"msg"];
     NSString * body = [_m objectForKey:@"body"];
     self.textView.text = [NSString stringWithFormat:@"%@%@\n", self.textView.text,body ];
-    //初始化AlertView
+// 初始化AlertView
 //    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"AlertViewTest"
 //                                                    message: body
 //                                                   delegate:self

@@ -10,37 +10,76 @@
 #import <MQTTClient/MQTTClient.h>
 #import <MQTTClient/MQTTSessionManager.h>
 
+NSString * const kLCPMSGServerHost = @"host";
+NSString * const kLCPMSGServerPort = @"port";
+NSString * const kLCPMSGAppName = @"appname";
+NSString * const kLCPMSGTls = @"tls";
+
+NSString * const kLCPServiceAPIDomain=@"api.lycam.tv";
+
 @interface LCPMessageManager() <MQTTSessionManagerDelegate>
 @property (strong, nonatomic) MQTTSessionManager *manager;
 @property (strong, nonatomic) NSString *base;
-@property (strong, nonatomic) NSString *topic;
+@property (strong, nonatomic) NSMutableDictionary<NSString *, NSNumber *> * subscriptions;
+
 @property (strong, nonatomic) NSDictionary *mqttSettings;
 @end
-#define DEFAULT_QOS_LEVEL MQTTQosLevelAtLeastOnce
+#define DEFAULT_QOS_LEVEL MQTTQosLevelExactlyOnce
 @implementation LCPMessageManager
 
--(id) initWithToken:(NSString *) token withTopic:(NSString*)topic withConfig:(NSDictionary*) config{
+-(id) initWithToken:(NSString *) token
+         withConfig:(NSDictionary*) config{
+    return [self initWithToken:token withChannel:nil withConfig:config];
+}
+
+-(id) initWithToken:(NSString *) token
+        withChannel:(NSString*) channel
+         withConfig:(NSDictionary*) config
+{
     if(self = [super init]){
         self.token = token;
         self.base = @"LCP";
-        self.topic = topic;
-       
-        self.mqttSettings = @{@"appname":@"LCP",
-                              @"host":@"mqtt.lycam.tv",
-                              @"port":@(1883),
-                              @"tls":@(NO)
+        
+        self.mqttSettings = @{kLCPMSGAppName:@"LCP",
+                              kLCPMSGServerHost:@"mqtt.lycam.tv",
+                              kLCPMSGServerPort:@(1883),
+                              kLCPMSGTls:@(NO)
                               };
         if(config){
             self.mqttSettings = config;
         }
+
         NSString * base = [self.mqttSettings objectForKey:@"appname"];
         if(base){
             self.base = base;
         }
+        if(channel)
+            self.subscriptions = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithInt:DEFAULT_QOS_LEVEL]
+                                                             forKey:[NSString stringWithFormat:@"%@/%@", self.base,channel]];
+        
+        else
+            self.subscriptions = [[NSMutableDictionary alloc] init];
+        
         
     }
     return self;
 }
+
+
+-(void) subscribeChannel:(NSString*) chan{
+
+
+    if(chan){
+        NSString * topic = [NSString stringWithFormat:@"%@/%@", self.base,chan];
+        [self.subscriptions setObject:[NSNumber numberWithInt:DEFAULT_QOS_LEVEL] forKey:topic];
+        [self setSubscriptions];
+    }
+}
+- (void)setSubscriptions
+{
+    [self.manager setSubscriptions:self.subscriptions];
+}
+
 
 
 -(void) disconnect{
@@ -55,8 +94,12 @@
         self.manager = [[MQTTSessionManager alloc] init];
         self.manager.delegate = self;
         
-        self.manager.subscriptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:DEFAULT_QOS_LEVEL]
-                                                                 forKey:[NSString stringWithFormat:@"%@/%@", self.base,self.topic]];
+        self.manager.subscriptions = self.subscriptions;
+        
+//        self.manager.subscriptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:DEFAULT_QOS_LEVEL]
+//                                    forKey:[NSString stringWithFormat:@"%@/%@", self.base,@"channel1"]];
+        
+        
         [self.manager connectTo:self.mqttSettings[@"host"]
                            port:[self.mqttSettings[@"port"] intValue]
                             tls:[self.mqttSettings[@"tls"] boolValue]
@@ -65,21 +108,31 @@
                            auth:true
                            user:[UIDevice currentDevice].name
                            pass:self.token
-                      willTopic:[NSString stringWithFormat:@"%@/%@", self.base,self.topic]
+                      willTopic:[NSString stringWithFormat:@"%@/willTopic", self.base]
                            will:[@"offline" dataUsingEncoding:NSUTF8StringEncoding]
                         willQos:MQTTQosLevelExactlyOnce
                  willRetainFlag:FALSE
                    withClientId:[UIDevice currentDevice].identifierForVendor.UUIDString];
+        
+        
+        [self.manager addObserver:self
+                       forKeyPath:@"state"
+                          options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
+                          context:nil];
     } else {
         [self.manager connectToLast];
     }
-    [self.manager addObserver:self
-                   forKeyPath:@"state"
-                      options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
-                      context:nil];
+
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+-(void) dealloc{
+    [self.manager removeObserver:self forKeyPath:@"state"];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
     switch (self.manager.state) {
         case MQTTSessionManagerStateClosed:
             if (self.delegate) {
@@ -133,7 +186,9 @@
 /*
  * MQTTSessionManagerDelegate
  */
-- (void)handleMessage:(NSData *)data onTopic:(NSString *)topic retained:(BOOL)retained {
+- (void)handleMessage:(NSData *)data
+              onTopic:(NSString *)topic
+             retained:(BOOL)retained {
     /*
      * MQTTClient: process received message
      */
@@ -144,8 +199,8 @@
     id obj = [self toArrayOrNSDictionary:jsonData];
     NSString *senderString = [topic substringFromIndex:self.base.length + 1];
     if (self.delegate) {
-        if ([self.delegate respondsToSelector:@selector(manager:receiveMessage:withTopic:)]) {
-            [self.delegate manager:self receiveMessage:obj withTopic:topic];
+        if ([self.delegate respondsToSelector:@selector(manager:receiveMessage:withTopic:withRetained:)]) {
+            [self.delegate manager:self receiveMessage:obj withTopic:topic withRetained:retained];
         }
     }
     
@@ -219,8 +274,11 @@
     }
     
 }
+-(NSString*) makeTopic:(NSString*) channel{
+    return [NSString stringWithFormat:@"%@/%@", self.base,channel];
+}
 
-- (NSInteger)send:(NSDictionary* ) obj {
+- (NSInteger)send:(NSDictionary* ) obj withChannel:(NSString *) channel{
     /*
      * MQTTClient: send data to broker
      */
@@ -232,8 +290,8 @@
                                                  encoding:NSUTF8StringEncoding];
     
 
-   NSInteger mID = [self.manager sendData:jsonData
-                     topic:[NSString stringWithFormat:@"%@/%@", self.base,self.topic]
+    NSInteger mID = [self.manager sendData:jsonData
+                                     topic:[self makeTopic:channel]
                        qos:DEFAULT_QOS_LEVEL
                     retain:FALSE];
     return mID;

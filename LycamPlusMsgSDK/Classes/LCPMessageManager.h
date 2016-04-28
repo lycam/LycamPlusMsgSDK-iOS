@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * const kLCPMSGServerHost;
+extern NSString * const kLCPMSGServerPort;
+extern NSString * const kLCPMSGAppName;
+extern NSString * const kLCPMSGTls;
+
 @class LCPMessageManager;
 
 @protocol LCPMessageManagerDelegate <NSObject>
@@ -17,7 +22,7 @@
 -(void) managerClosing:(LCPMessageManager*) manager ;
 -(void) managerClosed:(LCPMessageManager*) manager ;
 -(void) manager:(LCPMessageManager*)manager error: (NSError*) error;
--(void) manager:(LCPMessageManager*) manager receiveMessage:(NSDictionary * )msg withTopic:(NSString*) topic;
+-(void) manager:(LCPMessageManager*) manager receiveMessage:(NSDictionary * )msg withTopic:(NSString*) topic withRetained:(BOOL) retained;
 @end
 
 @interface LCPMessageManager : NSObject
@@ -26,8 +31,22 @@
 
 @property (weak, nonatomic) id<LCPMessageManagerDelegate> delegate;
 
--(id) initWithToken:(NSString *) token withTopic:(NSString*)topic withConfig:(NSDictionary*) config;
+-(id) initWithToken:(NSString *) token
+        withChannel:(NSString*) channel
+         withConfig:(NSDictionary*) config;
+
+-(id) initWithToken:(NSString *) token
+         withConfig:(NSDictionary*) config;
+
 -(void) connect;
+
 -(void) disconnect;
--(NSInteger) send:(NSDictionary* ) obj;
+
+//订阅频道
+-(void) subscribeChannel:(NSString*) channel ;
+
+//发送消息到指定频道
+- (NSInteger)send:(NSDictionary* ) obj
+      withChannel:(NSString *) channel;
+
 @end
