@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "LycamPlusMsgSDK"
-  s.version          = "0.1.3"
+  s.version          = "0.1.4"
   s.summary          = "A short description of LycamPlusMsgSDK for IM LycamPlus."
 
 # This description is used to generate tags and improve search results.
@@ -39,7 +39,7 @@ Pod::Spec.new do |s|
     'LycamPlusMsgSDK/Classes/*.h'
   ]
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  # s.dependency 'CocoaLumberjack', '~> 1.1'
   s.dependency  'MQTTClient', '~> 0.7.4'
   s.dependency  'MQTTClient/Websocket', '~> 0.7.4'
 end

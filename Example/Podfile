@@ -8,8 +8,8 @@ end
 target 'LycamPlusMsgSDK_Tests', :exclusive => true do
   pod 'LycamPlusMsgSDK', :path => '../'
 
-  pod 'Specta'
-  pod 'Expecta'
-  pod 'FBSnapshotTestCase'
-  pod 'Expecta+Snapshots'
+  #pod 'Specta'
+  #pod 'Expecta'
+  #pod 'FBSnapshotTestCase'
+  #pod 'Expecta+Snapshots'
 end
