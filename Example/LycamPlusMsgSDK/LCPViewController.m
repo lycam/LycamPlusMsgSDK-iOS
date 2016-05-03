@@ -77,7 +77,7 @@
                               kLCPMSGTls:@(NO)
                               };
     
-    _manager = [[ LCPMessageManager alloc]  initWithToken:@"KlPPCNHC4oiaZJYOyhyO5pXgK4zXiZeHAg3SIs7AtBkrwLH5gyHYbIxpGkX4u7yj" withConfig:config];
+    _manager = [[ LCPMessageManager alloc]  initWithToken:@"8CBP9OCqE4Ht7L4PjlMfO65LVVrMzIn4OGTBDTdzg1tSrjgu619Irlp9l2VuSD51" withConfig:config];
     _manager.delegate = self;
     [_manager connect];
 

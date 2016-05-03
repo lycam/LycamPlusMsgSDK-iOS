@@ -55,7 +55,7 @@ NSString * const kLCPServiceAPIDomain=@"api.lycam.tv";
         }
         if(channel)
             self.subscriptions = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithInt:DEFAULT_QOS_LEVEL]
-                                                             forKey:[NSString stringWithFormat:@"%@/%@", self.base,channel]];
+                                                             forKey:[NSString stringWithFormat:@"%@:%@", self.base,channel]];
         
         else
             self.subscriptions = [[NSMutableDictionary alloc] init];
@@ -70,7 +70,7 @@ NSString * const kLCPServiceAPIDomain=@"api.lycam.tv";
 
 
     if(chan){
-        NSString * topic = [NSString stringWithFormat:@"%@/%@", self.base,chan];
+        NSString * topic = [NSString stringWithFormat:@"%@:%@", self.base,chan];
         [self.subscriptions setObject:[NSNumber numberWithInt:DEFAULT_QOS_LEVEL] forKey:topic];
         [self setSubscriptions];
     }
@@ -97,7 +97,7 @@ NSString * const kLCPServiceAPIDomain=@"api.lycam.tv";
         self.manager.subscriptions = self.subscriptions;
         
 //        self.manager.subscriptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:DEFAULT_QOS_LEVEL]
-//                                    forKey:[NSString stringWithFormat:@"%@/%@", self.base,@"channel1"]];
+//                                    forKey:[NSString stringWithFormat:@"%@:%@", self.base,@"channel1"]];
         
         
         [self.manager connectTo:self.mqttSettings[@"host"]
@@ -275,7 +275,7 @@ NSString * const kLCPServiceAPIDomain=@"api.lycam.tv";
     
 }
 -(NSString*) makeTopic:(NSString*) channel{
-    return [NSString stringWithFormat:@"%@/%@", self.base,channel];
+    return [NSString stringWithFormat:@"%@:%@", self.base,channel];
 }
 
 - (NSInteger)send:(NSDictionary* ) obj withChannel:(NSString *) channel{

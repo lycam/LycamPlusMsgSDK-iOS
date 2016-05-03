@@ -45,6 +45,8 @@ extern NSString * const kLCPMSGTls;
 //订阅频道
 -(void) subscribeChannel:(NSString*) channel ;
 
+-(NSString*) makeTopic:(NSString*) channel;
+
 //发送消息到指定频道
 - (NSInteger)send:(NSDictionary* ) obj
       withChannel:(NSString *) channel;
