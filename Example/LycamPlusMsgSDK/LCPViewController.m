@@ -17,6 +17,7 @@
 @property (strong, nonatomic) UITextField *textField;
 
 @property (nonatomic, retain) UITextView *textView;
+@property (nonatomic, strong) NSString *channel;
 @end
 
 
@@ -30,6 +31,7 @@
     [_textField setBorderStyle:UITextBorderStyleRoundedRect]; //外框类型
     
     _textField.placeholder = @"输入文字"; //默认显示的字
+    self.channel = @"dev-41ab6191-112d-11e6-8fd3-8f9bf102dcc6";
     
 //    _textField.secureTextEntry = YES; //密码
     
@@ -71,13 +73,13 @@
     [self.view addSubview: self.textView];//加入到整个页面中
     
 
-    NSDictionary * config = @{kLCPMSGAppName:@"testapp",
+    NSDictionary * config = @{kLCPMSGAppName:@"myVideo",
                               kLCPMSGServerHost:@"mqtt.lycam.tv",
                               kLCPMSGServerPort:@(1883),
                               kLCPMSGTls:@(NO)
                               };
     
-    _manager = [[ LCPMessageManager alloc]  initWithToken:@"8CBP9OCqE4Ht7L4PjlMfO65LVVrMzIn4OGTBDTdzg1tSrjgu619Irlp9l2VuSD51" withConfig:config];
+    _manager = [[ LCPMessageManager alloc]  initWithToken:@"8CBP9OCqE4Ht7L4PjlMfO65LVVrMzIn4OGTBDTdzg1tSrjgu619Irlp9l2VuSD51" withChannel:self.channel  withConfig:config];
     _manager.delegate = self;
     [_manager connect];
 
@@ -92,7 +94,7 @@
                                    @"body":self.textField.text
                                    }
                            };
-    [self.manager send:msg withChannel:@"channel1"];
+    [self.manager send:msg withChannel:self.channel];
     self.textField.text = @"";
     return YES;
 }
@@ -107,7 +109,7 @@
 -(void) managerConnected:(LCPMessageManager *)manager{
     NSLog(@"connected");
     self.textView.text = [NSString stringWithFormat:@"%@%@\n", self.textView.text,@"connected!" ];
-    [_manager subscribeChannel:@"channel1"];
+//    [_manager subscribeChannel:@"dev-41ab6191-112d-11e6-8fd3-8f9bf102dcc6"];
 //    NSDictionary * msg = @{
 //                           @"type":@"chat",
 //                           @"msg": @{
@@ -133,6 +135,11 @@
 }
 -(void) manager:(LCPMessageManager *)manager error:(NSError *)error{
     self.textView.text = [NSString stringWithFormat:@"%@error:%d %@\n", self.textView.text, error.code,[error localizedDescription] ];
+
+}
+-(void) managerClosed:(LCPMessageManager *)manager{
+    self.textView.text = [NSString stringWithFormat:@"%@ closed\n", self.textView.text] ;
+    [self.manager reconnect];
 
 }
 @end

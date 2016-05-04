@@ -17,12 +17,22 @@ NSString * const kLCPMSGTls = @"tls";
 
 NSString * const kLCPServiceAPIDomain=@"api.lycam.tv";
 
+@interface MQTTSessionManager()
+@property (nonatomic) double reconnectTime;
+-(void) reconnect;
+@end
+
+
 @interface LCPMessageManager() <MQTTSessionManagerDelegate>
 @property (strong, nonatomic) MQTTSessionManager *manager;
 @property (strong, nonatomic) NSString *base;
 @property (strong, nonatomic) NSMutableDictionary<NSString *, NSNumber *> * subscriptions;
 
 @property (strong, nonatomic) NSDictionary *mqttSettings;
+@property (strong, nonatomic) NSTimer *reconnectTimer;
+@property (nonatomic) double reconnectTime;
+
+
 @end
 #define DEFAULT_QOS_LEVEL MQTTQosLevelExactlyOnce
 @implementation LCPMessageManager
@@ -39,6 +49,7 @@ NSString * const kLCPServiceAPIDomain=@"api.lycam.tv";
     if(self = [super init]){
         self.token = token;
         self.base = @"LCP";
+        self.reconnectTime=2;
         
         self.mqttSettings = @{kLCPMSGAppName:@"LCP",
                               kLCPMSGServerHost:@"mqtt.lycam.tv",
@@ -103,7 +114,7 @@ NSString * const kLCPServiceAPIDomain=@"api.lycam.tv";
         [self.manager connectTo:self.mqttSettings[@"host"]
                            port:[self.mqttSettings[@"port"] intValue]
                             tls:[self.mqttSettings[@"tls"] boolValue]
-                      keepalive:60
+                      keepalive:30
                           clean:true
                            auth:true
                            user:[UIDevice currentDevice].name
@@ -123,6 +134,22 @@ NSString * const kLCPServiceAPIDomain=@"api.lycam.tv";
         [self.manager connectToLast];
     }
 
+}
+-(void) reconnect{
+    [self.reconnectTimer invalidate];
+    self.reconnectTimer = [NSTimer timerWithTimeInterval:self.reconnectTime
+                                                  target:self
+                                                selector:@selector(doReconnect)
+                                                userInfo:Nil repeats:FALSE];
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    [runLoop addTimer:self.reconnectTimer
+              forMode:NSDefaultRunLoopMode];
+    
+    
+}
+-(void) doReconnect{
+    self.manager.reconnectTime = 0.5;
+    [self.manager reconnect];
 }
 
 -(void) dealloc{

@@ -41,6 +41,7 @@ extern NSString * const kLCPMSGTls;
 -(void) connect;
 
 -(void) disconnect;
+-(void) reconnect;
 
 //订阅频道
 -(void) subscribeChannel:(NSString*) channel ;
