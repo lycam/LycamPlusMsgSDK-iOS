@@ -79,7 +79,13 @@
                               kLCPMSGTls:@(NO)
                               };
     
-    _manager = [[ LCPMessageManager alloc]  initWithToken:@"8CBP9OCqE4Ht7L4PjlMfO65LVVrMzIn4OGTBDTdzg1tSrjgu619Irlp9l2VuSD51" withChannel:self.channel  withConfig:config];
+//    NSDictionary * config = @{kLCPMSGAppName:@"myVideo",
+//                              kLCPMSGServerHost:@"192.168.0.51",
+//                              kLCPMSGServerPort:@(1883),
+//                              kLCPMSGTls:@(NO)
+//                              };
+//    
+    _manager = [[ LCPMessageManager alloc]  initWithToken:@"9pzVFc2JCJ3xKkwL6ZzYLFW73jZbjcHTwioZ6u8SqFBKuM5qrEk9eR2YnPyeEUJX" withChannel:self.channel  withConfig:config];
     _manager.delegate = self;
     [_manager connect];
 
@@ -96,6 +102,7 @@
                            };
     [self.manager send:msg withChannel:self.channel];
     self.textField.text = @"";
+    [self.manager unsubscribeChannel:self.channel];
     return YES;
 }
 - (void)didReceiveMemoryWarning

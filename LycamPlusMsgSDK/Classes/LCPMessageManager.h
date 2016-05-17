@@ -45,6 +45,7 @@ extern NSString * const kLCPMSGTls;
 
 //订阅频道
 -(void) subscribeChannel:(NSString*) channel ;
+-(void) unsubscribeChannel:(NSString*) chan;
 
 -(NSString*) makeTopic:(NSString*) channel;
 

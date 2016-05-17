@@ -86,6 +86,18 @@ NSString * const kLCPServiceAPIDomain=@"api.lycam.tv";
         [self setSubscriptions];
     }
 }
+
+-(void) unsubscribeChannel:(NSString*) chan{
+    
+    
+    if(chan){
+        NSString * topic = [NSString stringWithFormat:@"%@:%@", self.base,chan];
+        [self.subscriptions removeObjectForKey:topic];
+        [self setSubscriptions];
+    }
+    
+}
+
 - (void)setSubscriptions
 {
     [self.manager setSubscriptions:self.subscriptions];
